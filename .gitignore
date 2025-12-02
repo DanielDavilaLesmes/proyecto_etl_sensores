@@ -1,0 +1,25 @@
+Entorno Virtual Python
+
+venv/
+.DS_Store
+
+Archivos Generados por Python y Build
+
+pycache/
+*.pyc
+*.egg-info/
+dist/
+
+Directorios de datos (LOCALES)
+
+Ignoramos la carpeta de destino de los CSVs generados por el ETL
+
+Nota: La ruta exacta debe ser configurada en src/config.py,
+
+pero ignoramos el nombre de la carpeta por defecto.
+
+CSV_LIMPIOS/
+
+Archivos de logs y temporales
+
+*.log
