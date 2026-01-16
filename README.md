@@ -1,3 +1,4 @@
+```markdown
 # 🏭 Proyecto ETL Sensores: Unificación de Datos (Multi-Esquema)
 
 --------------------------------------------
@@ -10,211 +11,136 @@
 
 ## 📄 Descripción del Proyecto
 
-Este proyecto implementa una arquitectura **ETL (Extracción, Transformación, Carga)** modular y robusta diseñada para unificar datos operativos provenientes de múltiples fuentes de archivos Excel con estructuras heterogéneas.
+Este proyecto implementa una arquitectura **ETL (Extracción, Transformación, Carga)** modular diseñada para unificar datos operativos provenientes de múltiples fuentes de archivos Excel con estructuras heterogéneas.
 
-El sistema estandariza la información de:
+El sistema estandariza tres tipos de insumos críticos:
 1.  **Sensores:** Pasillos, Muelles, Túneles (Temperaturas, Setpoints, Estados).
 2.  **Presión del Sistema:** Succión, Descarga, Aceite.
 3.  **Compresores:** Estados de conexión/desconexión y alarmas.
 
-El resultado son archivos **CSV limpios y consolidados**, optimizados con llaves relacionales para su ingesta directa en **Power BI**.
+El resultado son archivos **CSV limpios y consolidados**, optimizados con una **`Llave_Comun`** (tiempo normalizado) para su ingesta directa y modelado en **Power BI**.
 
-> **Nota Técnica:** Este proyecto está optimizado para entornos con restricciones. **NO utiliza `pandas`** ni dependencias pesadas. Se basa exclusivamente en `openpyxl` y la librería estándar de Python para máxima portabilidad y velocidad.
-
----
-
-## 🚀 Arquitectura del Proyecto
-
-El código sigue un diseño de **Separación de Responsabilidades**:
-
-* **`config.json`**: Archivo maestro de configuración. Define las rutas de entrada/salida separadas por proceso (Pasillos, Presión, etc.).
-* **`src/config.py`**: El "Cerebro" del sistema. Contiene:
-    * Los esquemas de salida dinámicos (columnas específicas para Sensores vs Presión).
-    * Los diccionarios de mapeo de columnas.
-    * La lista de nombres internos para identificar archivos automáticamente.
-* **`src/extract.py`**: Lee los archivos `.xlsx` usando `openpyxl` en modo lectura (`read_only`) para eficiencia de memoria. Cierra los archivos inmediatamente para permitir su movimiento.
-* **`src/transform.py`**:
-    * Limpia datos y convierte tipos numéricos.
-    * **Genera `Llave_Comun`**: (YYYYMMDDHHMM) para relacionar tablas.
-    * **Estandariza Fechas**: Redondea tiempos a intervalos de 10 minutos.
-    * **Codifica Pasillos**: Transforma "Pasillo 1" a "P001".
-* **`src/load.py`**: Genera los CSVs consolidados y maneja la escritura segura.
-* **`run_etl.py`**: El orquestador. Itera sobre los procesos configurados, gestiona el flujo de datos y mueve los archivos procesados a la carpeta `Archive`.
+> **Nota Técnica:** Proyecto optimizado para entornos con restricciones. **NO utiliza `pandas`**; se basa exclusivamente en `openpyxl` y librerías nativas de Python para máxima portabilidad.
 
 ---
 
-## 📂 Estructura de Directorios
+## 🛠️ Instalación y Despliegue
 
-El sistema requiere una estructura de carpetas específica para separar los insumos por tipo de proceso.
+Siga estos pasos para configurar el proyecto en un entorno local o servidor nuevo.
 
-```text
-Carpeta Raiz/ (Configurable)
-├── Archive/                  # Destino de archivos procesados
-│   ├── Pasillos/
-│   ├── Muelles/
-│   ├── Tuneles/
-│   ├── Presion/
-│   └── Compresores/
-│
-├── Export/                   # Salida de CSVs limpios
-│   ├── consol_pasillos.csv
-│   ├── consol_muelles.csv
-│   ├── consol_tuneles.csv
-│   ├── consol_presion.csv
-│   └── consol_compresores.csv
-│
-├── Import/                   # Bandeja de entrada (Archivos .xlsx)
-│   ├── Pasillos/
-│   ├── Muelles/
-│   ├── Tuneles/
-│   ├── Presion/
-│   └── Compresores/
+### 1. Clonar el Repositorio
+Abra una terminal (CMD o PowerShell) y ejecute:
 
+```bash
+git clone https://github.com/DanielDavilaLesmes/proyecto_etl_sensores.git
+cd proyecto_etl_sensores
 
-Aquí tienes el contenido completo y definitivo del archivo README.md en un solo bloque de texto plano. Solo tienes que copiarlo y pegarlo en tu editor.
+```
 
-Markdown
+### 2. Configurar el Entorno Virtual
 
-# 🏭 Proyecto ETL Sensores: Unificación de Datos (Multi-Esquema)
+Para aislar las dependencias y evitar conflictos con el sistema:
 
---------------------------------------------
-**© 2026 IceStar Latam - Todos los derechos reservados**
+```bash
+# Crear el entorno
+python -m venv venv
 
-* **Autor:** Daniel Andrés Dávila Lesmes
-* **Rol:** Excelencia Operacional
-* **Contacto:** danielandresd998@gmail.com
---------------------------------------------
+# Activar el entorno (Windows)
+.\venv\Scripts\activate
 
-## 📄 Descripción del Proyecto
+# Activar el entorno (Linux/Mac)
+# source venv/bin/activate
 
-Este proyecto implementa una arquitectura **ETL (Extracción, Transformación, Carga)** modular y robusta diseñada para unificar datos operativos provenientes de múltiples fuentes de archivos Excel con estructuras heterogéneas.
+```
 
-El sistema estandariza la información de:
-1.  **Sensores:** Pasillos, Muelles, Túneles (Temperaturas, Setpoints, Estados).
-2.  **Presión del Sistema:** Succión, Descarga, Aceite.
-3.  **Compresores:** Estados de conexión/desconexión y alarmas.
+### 3. Instalar Dependencias
 
-El resultado son archivos **CSV limpios y consolidados**, optimizados con llaves relacionales para su ingesta directa en **Power BI**.
+El proyecto es ligero. Instale la librería requerida (`openpyxl`) ejecutando:
 
-> **Nota Técnica:** Este proyecto está optimizado para entornos con restricciones. **NO utiliza `pandas`** ni dependencias pesadas. Se basa exclusivamente en `openpyxl` y la librería estándar de Python para máxima portabilidad y velocidad.
+```bash
+pip install -r requirements.txt
+
+```
 
 ---
 
-## 🚀 Arquitectura del Proyecto
+## ⚙️ Configuración (`config.json`)
 
-El código sigue un diseño de **Separación de Responsabilidades**:
+**IMPERATIVO:** Antes de ejecutar, actualice el archivo `config.json` en la raíz del proyecto. Debe definir las rutas absolutas donde se encuentran sus archivos Excel y donde desea los reportes.
 
-* **`config.json`**: Archivo maestro de configuración. Define las rutas de entrada/salida separadas por proceso (Pasillos, Presión, etc.).
-* **`src/config.py`**: El "Cerebro" del sistema. Contiene:
-    * Los esquemas de salida dinámicos (columnas específicas para Sensores vs Presión).
-    * Los diccionarios de mapeo de columnas.
-    * La lista de nombres internos para identificar archivos automáticamente.
-* **`src/extract.py`**: Lee los archivos `.xlsx` usando `openpyxl` en modo lectura (`read_only`) para eficiencia de memoria. Cierra los archivos inmediatamente para permitir su movimiento.
-* **`src/transform.py`**:
-    * Limpia datos y convierte tipos numéricos.
-    * **Genera `Llave_Comun`**: (YYYYMMDDHHMM) para relacionar tablas.
-    * **Estandariza Fechas**: Redondea tiempos a intervalos de 10 minutos.
-    * **Codifica Pasillos**: Transforma "Pasillo 1" a "P001".
-* **`src/load.py`**: Genera los CSVs consolidados y maneja la escritura segura.
-* **`run_etl.py`**: El orquestador. Itera sobre los procesos configurados, gestiona el flujo de datos y mueve los archivos procesados a la carpeta `Archive`.
+**Ejemplo de estructura:**
 
----
-
-## 📂 Estructura de Directorios
-
-El sistema requiere una estructura de carpetas específica para separar los insumos por tipo de proceso.
-
-```text
-Carpeta Raiz/ (Configurable)
-├── Archive/                  # Destino de archivos procesados
-│   ├── Pasillos/
-│   ├── Muelles/
-│   ├── Tuneles/
-│   ├── Presion/
-│   └── Compresores/
-│
-├── Export/                   # Salida de CSVs limpios
-│   ├── consol_pasillos.csv
-│   ├── consol_muelles.csv
-│   ├── consol_tuneles.csv
-│   ├── consol_presion.csv
-│   └── consol_compresores.csv
-│
-├── Import/                   # Bandeja de entrada (Archivos .xlsx)
-│   ├── Pasillos/
-│   ├── Muelles/
-│   ├── Tuneles/
-│   ├── Presion/
-│   └── Compresores/
-⚙️ Configuración (config.json)
-Es IMPERATIVO configurar las rutas en el archivo config.json ubicado en la raíz. El sistema soporta múltiples procesos simultáneos.
-
-Ejemplo de configuración:
-
-JSON
-
+```json
 {
     "RUTAS_PROCESO": {
         "PASILLOS": {
-            "INPUT": "C:\\Users\\Usuario\\DB_sitrad\\Import\\Pasillos\\",
+            "INPUT": "C:\\Ruta\\Import\\Pasillos\\",
             "OUTPUT_NAME": "consol_pasillos.csv"
         },
-        "MUELLES": {
-            "INPUT": "C:\\Users\\Usuario\\DB_sitrad\\Import\\Muelles\\",
-            "OUTPUT_NAME": "consol_muelles.csv"
-        },
-        "TUNELES": {
-            "INPUT": "C:\\Users\\Usuario\\DB_sitrad\\Import\\Tuneles\\",
-            "OUTPUT_NAME": "consol_tuneles.csv"
-        },
         "PRESION": {
-            "INPUT": "C:\\Users\\Usuario\\DB_sitrad\\Import\\Presion\\",
+            "INPUT": "C:\\Ruta\\Import\\Presion\\",
             "OUTPUT_NAME": "consol_presion.csv"
         },
         "COMPRESORES": {
-            "INPUT": "C:\\Users\\Usuario\\DB_sitrad\\Import\\Compresores\\",
+            "INPUT": "C:\\Ruta\\Import\\Compresores\\",
             "OUTPUT_NAME": "consol_compresores.csv"
         }
+        // ... (Agregar MUELLES y TUNELES si aplica)
     },
-    "CARPETA_DESTINO_GENERAL": "C:\\Users\\Usuario\\DB_sitrad\\Export\\",
-    "CARPETA_ARCHIVADOS_GENERAL": "C:\\Users\\Usuario\\DB_sitrad\\Archive\\"
+    "CARPETA_DESTINO_GENERAL": "C:\\Ruta\\Export\\",
+    "CARPETA_ARCHIVADOS_GENERAL": "C:\\Ruta\\Archive\\"
 }
-✨ Nuevas Funcionalidades
-El ETL ha sido actualizado con lógica de negocio avanzada:
 
-Dinamismo de Esquemas: El sistema detecta automáticamente si el archivo es un Sensor, una lectura de Presión o un Compresor, y aplica las columnas de salida correspondientes.
+```
 
-Relacionamiento (Llave_Comun): Se genera automáticamente una columna concatenada Anio+Mes+Dia+Hora10min (ej: 202601160010) en todas las tablas para permitir cruces de datos precisos.
+---
 
-Normalización de Tiempo: Todas las horas se redondean al intervalo de 10 minutos más cercano (00:04 -> 00:00, 00:06 -> 00:10) para sincronizar eventos.
+## ▶️ Ejecución
 
-Codificación de Pasillos: Se crea la columna Pasillo_est que estandariza nombres (ej: "Pasillo 1" -> "P001", "Pulmón" -> "PULMON").
+Una vez configurado, coloque los archivos `.xlsx` en las carpetas de entrada correspondientes y ejecute:
 
-🛠️ Instalación y Ejecución
-Requisitos Previos
-Python 3.8+
-
-Librería openpyxl
-
-Paso 1: Configurar Entorno
-Bash
-
-# Crear entorno virtual
-python -m venv venv
-
-# Activar (Windows)
-.\venv\Scripts\activate
-
-# Activar (Linux/Mac)
-source venv/bin/activate
-Paso 2: Instalar Dependencias
-Bash
-
-pip install openpyxl
-Paso 3: Ejecutar ETL
-Coloca los archivos .xlsx en sus carpetas Import correspondientes y ejecuta:
-
-Bash
-
+```bash
 python run_etl.py
 
+```
+
+### Flujo Automático:
+
+1. **Identificación:** El script detecta el tipo de archivo (Sensor, Presión, Compresor) leyendo la celda `B1`.
+2. **Transformación:**
+* Genera llave relacional `YYYYMMDDHHMM`.
+* Redondea horas a intervalos de 10 minutos.
+* Estandariza códigos (ej: "Pasillo 1" -> "P001").
+
+
+3. **Archivado:** Mueve los Excel procesados a la carpeta `Archive`.
+4. **Consolidación:** Genera los CSV finales en la carpeta `Export`.
+
+---
+
+## 🚀 Arquitectura del Código
+
+* **`src/config.py`**: Define los esquemas de salida dinámicos y mapeos de columnas.
+* **`src/extract.py`**: Lectura eficiente de Excel (modo `read_only`).
+* **`src/transform.py`**: Lógica de negocio, limpieza de fechas y codificación.
+* **`src/load.py`**: Generación de CSV y manejo de archivos.
+* **`run_etl.py`**: Orquestador principal.
+
+## 📂 Estructura de Directorios Esperada
+
+```text
+Carpeta Raiz/
+├── Archive/                  # Histórico de archivos procesados
+├── Export/                   # Salida de CSVs limpios
+├── Import/                   # Bandeja de entrada (.xlsx)
+│   ├── Pasillos/
+│   ├── Muelles/
+│   ├── Tuneles/
+│   ├── Presion/
+│   └── Compresores/
+
+```
+
+```
+
+```
