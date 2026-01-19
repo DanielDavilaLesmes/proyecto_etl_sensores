@@ -13,12 +13,11 @@ COLUMNAS_SALIDA_SENSORES = [
     'Proceso_Actual', 'Salida_REFR', 'Salida_FANS', 'Salida_DEFR'
 ]
 
-# Esquema B: PRESIÓN (Se agrega Llave_Comun)
+# Esquema B: PRESIÓN (Agrega Llave_Comun)
 COLUMNAS_SALIDA_PRESION = [
-    'Llave_Comun', 'Sistema', # <--- NUEVA COLUMNA
+    'Llave_Comun', 'Sistema',
     'Anio', 'Mes', 'Dia', 'Hora_10min', 'FechaHora_Original',
-    'Succion_PSI', 'Descarga_PSI', 'Aceite_PSI', 
-    'Descarga_C', 'Aceite_C'
+    'Presion_Gas', 'Setpoint', 'Desvio_Relativo', 'Proceso_Actual'
 ]
 
 # Esquema C: COMPRESORES (Se agrega Llave_Comun)
@@ -61,11 +60,10 @@ MAPPING_SENSORES_TIPO_2 = {
 # --- PRESIÓN ---
 MAPPING_PRESION = {
     'Fecha': 'FechaHora_Original',
-    'Succión (PSI)': 'Succion_PSI',
-    'Descarga (PSI)': 'Descarga_PSI',
-    'Aceite (PSI)': 'Aceite_PSI',
-    'Descarga (C)': 'Descarga_C',
-    'Aceite (C)': 'Aceite_C'
+    'Presión del gas': 'Presion_Gas',
+    'Setpoint actual': 'Setpoint',
+    'Proceso actual': 'Proceso_Actual',
+    'Desvío relativo al Setpoint': 'Desvio_Relativo'
 }
 
 # --- COMPRESORES (NUEVO) ---
@@ -98,7 +96,7 @@ NAMES_SENSORES_TIPO_2 = [
 ]
 
 NAMES_PRESION = [
-    "Sistema", "Sistema de Frio", "Presion", "Rack Principal"
+    "Sistema", "Sistema de Frio", "Presión", "Rack Principal"
 ]
 
 NAMES_COMPRESORES = [
@@ -137,7 +135,7 @@ CONFIG_PRESION = {
     'output_schema': COLUMNAS_SALIDA_PRESION,
     'id_column_name': 'Sistema',
     'column_mapping': MAPPING_PRESION,
-    'numeric_fields': ['Succion_PSI', 'Descarga_PSI', 'Aceite_PSI', 'Descarga_C', 'Aceite_C']
+    'numeric_fields': ['Presion_Gas', 'Setpoint', 'Desvio_Relativo']
 }
 
 CONFIG_COMPRESORES = {
